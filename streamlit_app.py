@@ -13,8 +13,9 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.chat_models import ChatOpenAI
 # from langchain.chains.question_answering import load_qa_chain
 from langchain.retrievers import SVMRetriever
+import tempfile
 
-os.environ['OPENAI_API_KEY'] = "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"
+
 
 st.title("Avtarcoach Audio-to-text")
 
@@ -29,7 +30,10 @@ if len(audio) > 0:
     st.audio(audio.export().read())
 
     # To save audio to a file, use pydub export method:
-    audio.export("audio.wav", format="wav")
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmpfile:
+        audio.export(tmpfile.name, format="wav")
+        # Optionally, you can get the path to the temporary file if you need it
+        temp_audio_path = tmpfile.name
 
     # To get audio properties, use pydub AudioSegment properties:
     st.write(
@@ -38,7 +42,7 @@ if len(audio) > 0:
 model = whisper.load_model("base")
 
 # load audio and pad/trim it to fit 30 seconds
-audio = whisper.load_audio(r"audio.wav")
+audio = whisper.load_audio(temp_audio_path)
 audio = whisper.pad_or_trim(audio)
 
 # make log-Mel spectrogram and move to the same device as the model
