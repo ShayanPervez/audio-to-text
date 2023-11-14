@@ -13,6 +13,7 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.chat_models import ChatOpenAI
 # from langchain.chains.question_answering import load_qa_chain
 from langchain.retrievers import SVMRetriever
+import tempfile
 
 
 
