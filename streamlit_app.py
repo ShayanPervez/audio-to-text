@@ -2,26 +2,16 @@ import os
 import streamlit as st
 import whisper
 from langchain.chains import RetrievalQA
-from audio_recorder_streamlit import audio_recorder
 from audiorecorder import audiorecorder
-from langchain.chains import AnalyzeDocumentChain
-from langchain.chains.question_answering import load_qa_chain
 from langchain.document_loaders import DirectoryLoader
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores.faiss import FAISS
-from langchain.chat_models import ChatOpenAI
-# from langchain.chains.question_answering import load_qa_chain
-from langchain.retrievers import SVMRetriever
 import tempfile
 
 
 
 st.title("Avtarcoach Audio-to-text")
-
-# audio_bytes = audio_recorder("Click to record", "Click to stop recording", neutral_color="#051082", icon_size="2x")
-# if audio_bytes:
-#     st.audio(audio_bytes, format="audio/wav")
 
 audio = audiorecorder("Click to record", "Click to stop recording")
 
@@ -92,16 +82,9 @@ text_splitters = RecursiveCharacterTextSplitter(
 
 chunks = text_splitters.split_documents(documents)
 embedding = OpenAIEmbeddings()
-# db = FAISS.from_documents(chunks, embedding)
 faiss_db = FAISS.from_documents(chunks, embedding)
 retriever = faiss_db.as_retriever(search_type='mmr')
 llm = ChatOpenAI(model="gpt-4-1106-preview", temperature=0)
 qa_chain = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
-
-# doc_search =faiss_db.get_relevant_documents(input_text)
-# llm = ChatOpenAI(model="gpt-4-1106-preview",temperature =0)
-# qa_chain = load_qa_chain(llm=llm,chain_type="stuff")
-# qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
 response = qa_chain.run(input_text)
-
 st.write(response)
