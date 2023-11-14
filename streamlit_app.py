@@ -12,7 +12,7 @@ import tempfile
 
 
 st.title("Avtarcoach Audio-to-text")
-
+input_text=""
 audio = audiorecorder("Click to record", "Click to stop recording")
 
 if len(audio) > 0:
@@ -29,26 +29,27 @@ if len(audio) > 0:
     st.write(
         f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
 
-model = whisper.load_model("base")
+if temp_audio_path:  # Check if temp_audio_path is set
+        model = whisper.load_model("base")
 
-# load audio and pad/trim it to fit 30 seconds
-audio = whisper.load_audio(temp_audio_path)
-audio = whisper.pad_or_trim(audio)
+        # load audio and pad/trim it to fit 30 seconds
+        audio = whisper.load_audio(temp_audio_path)
+        audio = whisper.pad_or_trim(audio)
 
-# make log-Mel spectrogram and move to the same device as the model
-mel = whisper.log_mel_spectrogram(audio).to(model.device)
+        # make log-Mel spectrogram and move to the same device as the model
+        mel = whisper.log_mel_spectrogram(audio).to(model.device)
 
-# detect the spoken language
-_, probs = model.detect_language(mel)
-st.write(f"Detected language: {max(probs, key=probs.get)}")
+        # detect the spoken language
+        _, probs = model.detect_language(mel)
+        st.write(f"Detected language: {max(probs, key=probs.get)}")
 
-# decode the audio
-options = whisper.DecodingOptions(fp16=False)
-result = whisper.decode(model, mel, options)
+        # decode the audio
+        options = whisper.DecodingOptions(fp16=False)
+        result = whisper.decode(model, mel, options)
 
-# print the recognized text
-st.write("You Said: ", result.text)
-input_text = result.text
+        # print the recognized text
+        st.write("You Said: ", result.text)
+        input_text = result.text
 
 st.markdown("""<hr style="height:10px;border:none;color:#333;background-color:#333;" /> """, unsafe_allow_html=True)
 
