@@ -14,7 +14,7 @@ from langchain.chat_models import ChatOpenAI
 # from langchain.chains.question_answering import load_qa_chain
 from langchain.retrievers import SVMRetriever
 
-os.environ['OPENAI_API_KEY'] = "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"
+
 
 st.title("Avtarcoach Audio-to-text")
 
