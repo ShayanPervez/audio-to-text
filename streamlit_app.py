@@ -67,16 +67,16 @@ st.write("Avtarcoach Response: ")
 # Gen AI results
 
 pdf_loader = DirectoryLoader(
-    r'C:\Users\shpe1\Downloads\tea_project_text_to_text-main\tea_project_text_to_text-main\pdf_docs', glob="**/*.pdf",
+    "pdf_docs", glob="**/*.pdf",
     use_multithreading=True)
 docs_loader = DirectoryLoader(
-    r'C:\Users\shpe1\Downloads\tea_project_text_to_text-main\tea_project_text_to_text-main\docs', glob="**/*.docx",
+    "docs", glob="**/*.docx",
     use_multithreading=True)
 csv_loader = DirectoryLoader(
-    r'C:\Users\shpe1\Downloads\tea_project_text_to_text-main\tea_project_text_to_text-main\docs', glob="**/*.csv",
+    "docs", glob="**/*.csv",
     use_multithreading=True)
 xlsx_loader = DirectoryLoader(
-    r'C:\Users\shpe1\Downloads\tea_project_text_to_text-main\tea_project_text_to_text-main\docs', glob="**/*.xlsx",
+    "docs", glob="**/*.xlsx",
     use_multithreading=True)
 loaders = [pdf_loader, docs_loader, csv_loader, xlsx_loader]
 
