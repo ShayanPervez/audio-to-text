@@ -39,7 +39,7 @@ mel = whisper.log_mel_spectrogram(audio).to(model.device)
 
 # detect the spoken language
 _, probs = model.detect_language(mel)
-        st.write(f"Detected language: {max(probs, key=probs.get)}")
+st.write(f"Detected language: {max(probs, key=probs.get)}")
 # decode the audio
 options = whisper.DecodingOptions(fp16=False)
 result = whisper.decode(model, mel, options)
