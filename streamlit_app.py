@@ -13,6 +13,7 @@ import tempfile
 
 st.title("Avtarcoach Audio-to-text")
 input_text=""
+temp_audio_path=""
 audio = audiorecorder("Click to record", "Click to stop recording")
 
 if len(audio) > 0:
@@ -24,15 +25,16 @@ if len(audio) > 0:
         audio.export(tmpfile.name, format="wav")
         # Optionally, you can get the path to the temporary file if you need it
         temp_audio_path = tmpfile.name
-        model = whisper.load_model("base")
-
-        # load audio and pad/trim it to fit 30 seconds
-        audio = whisper.load_audio(temp_audio_path)
-        audio = whisper.pad_or_trim(audio)
+        
 
     # To get audio properties, use pydub AudioSegment properties:
     st.write(
         f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
+model = whisper.load_model("base")
+
+# load audio and pad/trim it to fit 30 seconds
+audio = whisper.load_audio(temp_audio_path)
+audio = whisper.pad_or_trim(audio)
 
 # make log-Mel spectrogram and move to the same device as the model
 mel = whisper.log_mel_spectrogram(audio).to(model.device)
