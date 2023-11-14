@@ -24,32 +24,28 @@ if len(audio) > 0:
         audio.export(tmpfile.name, format="wav")
         # Optionally, you can get the path to the temporary file if you need it
         temp_audio_path = tmpfile.name
-
-    # To get audio properties, use pydub AudioSegment properties:
-    st.write(
-        f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
-
-if temp_audio_path:  # Check if temp_audio_path is set
         model = whisper.load_model("base")
 
         # load audio and pad/trim it to fit 30 seconds
         audio = whisper.load_audio(temp_audio_path)
         audio = whisper.pad_or_trim(audio)
 
-        # make log-Mel spectrogram and move to the same device as the model
-        mel = whisper.log_mel_spectrogram(audio).to(model.device)
+    # To get audio properties, use pydub AudioSegment properties:
+    st.write(
+        f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
 
-        # detect the spoken language
-        _, probs = model.detect_language(mel)
+# make log-Mel spectrogram and move to the same device as the model
+mel = whisper.log_mel_spectrogram(audio).to(model.device)
+
+# detect the spoken language
+_, probs = model.detect_language(mel)
         st.write(f"Detected language: {max(probs, key=probs.get)}")
-
-        # decode the audio
-        options = whisper.DecodingOptions(fp16=False)
-        result = whisper.decode(model, mel, options)
-
-        # print the recognized text
-        st.write("You Said: ", result.text)
-        input_text = result.text
+# decode the audio
+options = whisper.DecodingOptions(fp16=False)
+result = whisper.decode(model, mel, options)
+# print the recognized text
+st.write("You Said: ", result.text)
+input_text = result.text
 
 st.markdown("""<hr style="height:10px;border:none;color:#333;background-color:#333;" /> """, unsafe_allow_html=True)
 
